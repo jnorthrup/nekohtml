@@ -37,7 +37,7 @@ import org.apache.xerces.xni.parser.XMLDocumentSource;
 import org.cyberneko.html.HTMLElements.Element;
 import org.cyberneko.html.filters.NamespaceBinder;
 import org.cyberneko.html.xercesbridge.XercesBridge;
-                      
+
 /**
  * Balances tags in an HTML document. This component receives document events
  * and tries to correct many common mistakes that human (and computer) HTML
@@ -1068,7 +1068,7 @@ public class HTMLTagBalancer
                 fErrorReporter.reportWarning("HTML2007", new Object[]{ename,iname});
             }
             if (fDocumentHandler != null) {
-                // PATCH: Marc-André Morissette
+                // PATCH: Marc-Andrï¿½ Morissette
                 callEndElement(info.qname, i < depth - 1 ? synthesizedAugs() : augs);
             }
         }

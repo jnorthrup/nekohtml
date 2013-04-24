@@ -39,7 +39,7 @@ import org.apache.xerces.xni.parser.XMLParseException;
 import org.apache.xerces.xni.parser.XMLPullParserConfiguration;
 import org.cyberneko.html.filters.NamespaceBinder;
 import org.cyberneko.html.xercesbridge.XercesBridge;
-                                      
+
 /**
  * An XNI-based parser configuration that can be used to parse HTML 
  * documents. This configuration can be used directly in order to
