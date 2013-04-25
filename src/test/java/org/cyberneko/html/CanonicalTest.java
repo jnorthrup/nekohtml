@@ -63,7 +63,7 @@ public class CanonicalTest extends TestCase {
     	final List/*File*/ dataFiles = new ArrayList();
         File dataDir = new File("data");
         dataDir.listFiles(new FileFilter() {
-            public boolean accept(final File file) {
+            public boolean accept(File file) {
                 String name = file.getName();
                 if (file.isDirectory() && !"canonical".equals(name)) {
                 	file.listFiles(this);
@@ -82,14 +82,14 @@ public class CanonicalTest extends TestCase {
         return suite;
     }
 
-    CanonicalTest(final File dataFile) throws Exception {
+    CanonicalTest(File dataFile) throws Exception {
         super(dataFile.getName() + " [" + XercesBridge.getInstance().getVersion() + "]");
         this.dataFile = dataFile;
     }
     
     
     protected void runTest() throws Exception {
-        final String dataLines = getResult(dataFile);
+        String dataLines = getResult(dataFile);
         try
         {
         	// prepare for future changes where canonical files are next to test file
@@ -100,14 +100,14 @@ public class CanonicalTest extends TestCase {
         	if (!canonicalFile.exists()) {
         		fail("Canonical file not found: " + canonicalFile.getAbsolutePath() + ": " + dataLines);
         	}
-            final String canonicalLines = getCanonical(canonicalFile);
+            String canonicalLines = getCanonical(canonicalFile);
             
             assertEquals(canonicalLines, dataLines);
         }
-        catch (final AssertionFailedError e)
+        catch (AssertionFailedError e)
         {
-        	final File output = new File(outputDir, dataFile.getName());
-        	final PrintWriter pw = new PrintWriter(new FileOutputStream(output));
+        	File output = new File(outputDir, dataFile.getName());
+        	PrintWriter pw = new PrintWriter(new FileOutputStream(output));
         	pw.print(dataLines);
         	pw.close();
         	
@@ -115,19 +115,19 @@ public class CanonicalTest extends TestCase {
         }
     }
 
-    private String getCanonical(final File infile) throws IOException {
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(
+    private String getCanonical(File infile) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
                 new UTF8BOMSkipper(new FileInputStream(infile)), "UTF-8"));
-        final StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer();
         String line;
-        while ((line = reader.readLine()) != null) {
+        while (null != (line = reader.readLine())) {
             sb.append(line).append("\n");
         }
         reader.close();
         return sb.toString();
     }
 
-    private String getResult(final File infile) throws IOException {
+    private String getResult(File infile) throws IOException {
         StringWriter out = new StringWriter();
         try {
             // create filters
@@ -143,20 +143,23 @@ public class CanonicalTest extends TestCase {
             if (insettings.exists()) {
                 BufferedReader settings = new BufferedReader(new FileReader(insettings));
                 String settingline;
-                while ((settingline = settings.readLine()) != null) {
-                    StringTokenizer tokenizer = new StringTokenizer(settingline);
-                    String type = tokenizer.nextToken();
-                    String id = tokenizer.nextToken();
-                    String value = tokenizer.nextToken();
+                while (null != (settingline = settings.readLine())) {
+                    int x=0;
+//                    StringTokenizer tokenizer = new StringTokenizer(settingline);
+                    String[] split = settingline.split("[ \t\n\r\f]+");
+
+                    String type = split[x++];
+                    String id = split[x++];
+                    String value = split[x++];
                     if (type.equals("feature")) {
-                        parser.setFeature(id, value.equals("true"));
-                        if (HTMLScanner.REPORT_ERRORS.equals(id)) {
-                        	parser.setErrorHandler(new HTMLErrorHandler(out));
+                        parser.setFeature(id, "true".equals(value));
+                        switch (id) {
+                            case HTMLScanner.REPORT_ERRORS:
+                                parser.setErrorHandler(new HTMLErrorHandler(out));
+                                break;
                         }
                     }
-                    else {
-                        parser.setProperty(id, value);
-                    }
+                    else parser.setProperty(id, value);
                 }
                 settings.close();
             }
@@ -167,10 +170,10 @@ public class CanonicalTest extends TestCase {
         finally {
             out.close();
         }
-        final BufferedReader reader = new BufferedReader(new StringReader(out.toString()));
-        final StringBuffer sb = new StringBuffer();
+        BufferedReader reader = new BufferedReader(new StringReader(out.toString()));
+        StringBuffer sb = new StringBuffer();
         String line;
-        while ((line = reader.readLine()) != null) {
+        while (null != (line = reader.readLine())) {
             sb.append(line).append("\n");
         }
         return sb.toString();

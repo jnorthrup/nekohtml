@@ -254,7 +254,7 @@ public class Writer
     public void startGeneralEntity(String name, XMLResourceIdentifier id, String encoding, Augmentations augs)
         throws XNIException {
         fPrintChars = false;
-        if (name.startsWith("#")) {
+        if (name.length() > 0 && name.charAt(0) == '#') {
             try {
                 boolean hex = name.startsWith("#x");
                 int offset = hex ? 2 : 1;
